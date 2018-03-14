@@ -1,16 +1,19 @@
 const mysql = require('mysql');
 
+const config={
+    host: '127.0.0.1',
+    user: 'root',
+    password: 'root',
+    database: 'fablab'
+};
 
-const connection = mysql.createConnection({
-    host: '35.178.13.4',
-    user: 'admin',
-    password: 'admin123',
-    database: 'testDB'
-});
+
+const connection = mysql.createConnection(config);
 connection.connect((err)=> {
     if (err) {
         console.log(err);
     } else {
-        console.log('z');
+        console.log('Connected to database '+ config.database);
     }
 });
+module.exports = connection;
