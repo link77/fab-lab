@@ -12,7 +12,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const server = require('http').Server(api);
-const authentication= require('./controllers/authentication')(router);
+const users= require('./controllers/users_controller')(router);
 
 /* End Express imports and configuration as HTTP server  */
 
@@ -41,7 +41,7 @@ api.use(express.static('www')); // Angular static files
 /* CREARE QUI I VARI ROUTING  */
 /* Esempio:
 /* https://medium.com/@avanthikameenakshi/building-restful-api-with-nodejs-and-mysql-in-10-min-ff740043d4be */
-api.use('/api/v1/authentication',authentication);
+api.use('/api/v1/users', users);
 
 
 
