@@ -137,6 +137,37 @@ module.exports = (router) => {
             }
         }
     });
+    
+    /* ==============
+     Delete Route
+  ============== */
+
+  router.delete('/delete/:id', (req, res) => {
+    if(!req.params.id){
+        res.json({
+            status: "false",
+            count: 0,
+            data: "No id was provided"
+        });
+    }else{                   
+        var query='DELETE FROM users WHERE id='+req.params.id;
+        db.query(query,(error, result)=>{
+            if(error){
+                res.json({
+                    status: "false",
+                    count: 0,
+                    data: error
+                });
+            }else{
+                res.json({
+                    status: "true",
+                    count: 0,
+                    data: "User removed"
+                });
+            }
+        });
+    }
+});
 
 
 
