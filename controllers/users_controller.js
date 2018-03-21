@@ -63,12 +63,12 @@ module.exports = (router) => {
                                 const token= jwt.sign({userId:result.id} , crypto, { expiresIn:'24h' }); //token
                                 res.status(200).json({
                                     status: "true",
-                                    count: result.count,
+                                    count: result.length,
                                     data: {
                                         token: token,
                                         user:{
                                             username: result[0].username,
-                                            group: result[0].groups_id
+                                            group: result[0].Groups_id
                                         }
                                     }
                                 });
