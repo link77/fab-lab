@@ -2,9 +2,10 @@ const mysql = require('mysql');
 
 
 const config={
-    host: '127.0.0.1',
-    user: 'root',
-    password: 'root',
+    host: 'cloud.link77.eu',
+    port: 3306,
+    user: 'fablab',
+    password:'a3d92-FT',
     database: 'fablab'
 };
 

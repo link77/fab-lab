@@ -6,6 +6,14 @@ const bcrypt = require('bcrypt-nodejs');
 
 module.exports = (router) => {
 
+    /*
+    *   406: Not Acceptable | La risorsa richiesta è solo in grado di generare contenuti non accettabili secondo la header Accept inviato nella richiesta
+    *   301: 
+    *   200: OK | Risposta standard per le richieste HTTP andate a buon fine.
+    *   500: Internal Server Error | Errore generico
+    *   404: Not Found | Non è stato possibile trovare quanto richiesto
+    */
+
 
      /* ========
   LOGIN ROUTE
@@ -14,14 +22,14 @@ module.exports = (router) => {
     router.post('/login', (req, res) => {
 
         if (!req.body.username) {
-            res.json({
+            res.status(406).json({
                 status: "false",
                 count: 0,
                 data: "No username was provided"
             });
         } else {
             if (!req.body.password) {
-                res.json({
+                res.status(406).json({
                     status: "false",
                     count: 0,
                     data: "No password was provided"
@@ -30,7 +38,7 @@ module.exports = (router) => {
                 var query="SELECT * FROM users where username='"+req.body.username+"'";
                 db.query(query,(error, result)=>{
                     if(error){
-                        res.json({
+                        res.status(500).json({
                             status: "false",
                             count: 0,
                             data: error
@@ -38,26 +46,25 @@ module.exports = (router) => {
                     }else{
                         if(result.length==0)     
                         {
-                            res.json({
+                            res.status(301).json({
                                 status: "false",
                                 count: 0,
-                                data: "Username not found"
+                                data: "Invalid username or password"        //scrivo così in modo da non dire se è sbagliata la password o l'username per motivi di sicurezza
                             });
                         }else{
                             const validPassword= result[0].password.localeCompare(req.body.password);
                             if(validPassword!=0){
-                                res.json({
+                                res.status(301).json({
                                     status: "false",
                                     count: 0,
-                                    data: "Invalid password"
+                                    data: "Invalid username or password"        //scrivo così in modo da non dire se è sbagliata la password o l'username per motivi di sicurezza
                                 });
                             }else{
                                 const token= jwt.sign({userId:result.id} , crypto, { expiresIn:'24h' }); //token
-                                res.json({
+                                res.status(200).json({
                                     status: "true",
                                     count: result.count,
                                     data: {
-                                        message:"Success",
                                         token: token,
                                         user:{
                                             username: result[0].username,
@@ -82,21 +89,21 @@ module.exports = (router) => {
 
     router.post('/register', (req, res) => {
         if(!req.body.username){
-            res.json({
+            res.status(406).json({
                 status: "false",
                 count: 0,
                 data: "No username was provided"
             });
         }else{
             if(!req.body.password){
-                res.json({
+                res.status(406).json({
                     status: "false",
                     count: 0,
                     data: "No password was provided"
                 });
             }else{
                 if(!req.body.groups_id){
-                    res.json({
+                    res.status(406).json({
                         status: "false",
                         count: 0,
                         data: "No groups_id was provided"
@@ -113,20 +120,20 @@ module.exports = (router) => {
                      db.query(query,(error, result)=>{
                          if(error){
                             if(error.errno===1062){      //errore duplicati
-                                res.json({
+                                res.status(406).json({
                                     status: "false",
                                     count: 0,
                                     data: "Username already exist"
                                 });
                             }else{
-                                res.json({
+                                res.status(500).json({
                                     status: "false",
                                     count: 0,
                                     data: "Could not save user: "+error
                                 });
                             }
                          }else{
-                            res.json({
+                            res.status(200).json({
                                 status: "true",
                                 count: 0,
                                 data: "Acount registered"
@@ -144,7 +151,7 @@ module.exports = (router) => {
 
   router.delete('/delete/:id', (req, res) => {
     if(!req.params.id){
-        res.json({
+        res.status(406).json({
             status: "false",
             count: 0,
             data: "No id was provided"
@@ -153,13 +160,13 @@ module.exports = (router) => {
         var query='DELETE FROM users WHERE id='+req.params.id;
         db.query(query,(error, result)=>{
             if(error){
-                res.json({
+                res.status(500).json({
                     status: "false",
                     count: 0,
                     data: error
                 });
             }else{
-                res.json({
+                res.status(200).json({
                     status: "true",
                     count: 0,
                     data: "User removed"
